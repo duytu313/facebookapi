@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="100dp"
+    android:layout_height="match_parent"
+    android:padding="4dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/ivStory"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/avatar1"
+        android:background="@drawable/story_bg"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alice"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:singleLine="true"/>
+</LinearLayout>

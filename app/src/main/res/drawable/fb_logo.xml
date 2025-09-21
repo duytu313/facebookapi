@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+
+    <!-- Hình tròn nền xanh Facebook -->
+    <path
+        android:fillColor="#1877F2"
+        android:pathData="M20,0C8.954,0 0,8.954 0,20s8.954,20 20,20 20-8.954 20-20S31.046,0 20,0z" />
+
+    <!-- Chữ F trắng -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22.5,12h-2c-0.552,0-1,0.448-1,1v2h3l-0.5,3h-2.5v7h-3v-7h-2v-3h2v-2c0-2.209,1.791-4,4-4h2v3z" />
+
+</vector>

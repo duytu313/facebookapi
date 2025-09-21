@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Màu khi tab được chọn -->
+    <item android:color="#1877F2" android:state_checked="true" />
+
+    <!-- Màu khi tab chưa chọn -->
+    <item android:color="#8e8e93" android:state_checked="false" />
+
+</selector>
+
