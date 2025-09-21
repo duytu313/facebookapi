@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#f0f2f5"
+    android:padding="8dp">
 
-    <!-- RecyclerView Story -->
+    <!-- Story RecyclerView ngang -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/storyRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        android:orientation="horizontal"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp"/>
 
-    <!-- RecyclerView Posts -->
+    <!-- Dòng phân cách -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d3d3d3"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Post RecyclerView dọc -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical" />
-
+        android:layout_weight="1"/>
 </LinearLayout>

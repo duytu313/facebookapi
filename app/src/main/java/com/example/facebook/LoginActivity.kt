@@ -6,55 +6,54 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.*
+import retrofit2.converter.gson.GsonConverterFactory
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var edtUsernameOrEmail: EditText
-    private lateinit var edtPassword: EditText
+    private lateinit var edtUser: EditText
+    private lateinit var edtPass: EditText
     private lateinit var btnLogin: Button
     private lateinit var btnCreateAccount: Button
+    private lateinit var api: ApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        edtUsernameOrEmail = findViewById(R.id.etEmail)
-        edtPassword = findViewById(R.id.etPassword)
+        edtUser = findViewById(R.id.etEmail)
+        edtPass = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
         btnCreateAccount = findViewById(R.id.btnCreateAccount)
 
+        api = Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:3000/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+
         btnLogin.setOnClickListener {
-            val input = edtUsernameOrEmail.text.toString().trim()
-            val password = edtPassword.text.toString().trim()
-
-
-            if (input.isEmpty() || password.isEmpty()) {
+            val usernameOrEmail = edtUser.text.toString().trim()
+            val password = edtPass.text.toString().trim()
+            if (usernameOrEmail.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val request = LoginRequest(input, password)
-            ApiClient.apiService.login(request).enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+            api.login(usernameOrEmail, password).enqueue(object : Callback<AuthResponse> {
+                override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
                     val body = response.body()
-                    if (body?.success == true) {
-                        Toast.makeText(this@LoginActivity, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
-                        body.token?.let {
-                            val sp = getSharedPreferences("APP_PREFS", MODE_PRIVATE)
-                            sp.edit().putString("TOKEN", it).apply()
-                        }
+                    if (body != null && body.success) {
+                        Toast.makeText(this@LoginActivity, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                         finish()
                     } else {
-                        Toast.makeText(this@LoginActivity, body?.message ?: "Sai thông tin đăng nhập", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, body?.message ?: "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show()
                     }
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    Toast.makeText(this@LoginActivity, "Lỗi kết nối: ${t.message}", Toast.LENGTH_SHORT).show()
+                override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                    Toast.makeText(this@LoginActivity, "Lỗi: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
         }

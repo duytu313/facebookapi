@@ -1,26 +1,29 @@
 package com.example.facebook
 
-import android.graphics.Color
+import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import android.graphics.Color
+import android.widget.VideoView
 
-class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+class PostAdapter(private val posts: MutableList<Post>) :
+    RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvUsername: TextView = itemView.findViewById(R.id.tvUsername)
-        val tvContent: TextView = itemView.findViewById(R.id.tvContent)
-        val ivPost: ImageView = itemView.findViewById(R.id.ivPost)
-        val ivLike: ImageView = itemView.findViewById(R.id.ivLike)
-        val ivComment: ImageView = itemView.findViewById(R.id.ivComment)
-        val ivShare: ImageView = itemView.findViewById(R.id.ivShare)
-        val tvLikeCount: TextView = itemView.findViewById(R.id.tvLikeCount)
-        val tvCommentCount: TextView = itemView.findViewById(R.id.tvCommentCount)
-        val tvShareCount: TextView = itemView.findViewById(R.id.tvShareCount)
+        val userName: TextView = itemView.findViewById(R.id.post_user)
+        val content: TextView = itemView.findViewById(R.id.post_content)
+        val postImage: ImageView = itemView.findViewById(R.id.post_image)
+        val postVideo: VideoView = itemView.findViewById(R.id.post_video)
+        val likeIcon: ImageView = itemView.findViewById(R.id.btnLikeIcon)
+        val likeText: TextView = itemView.findViewById(R.id.btnLikeText)
+        val commentIcon: ImageView = itemView.findViewById(R.id.btnCommentIcon)
+        val commentText: TextView = itemView.findViewById(R.id.btnCommentText)
+        val shareIcon: ImageView = itemView.findViewById(R.id.btnShareIcon)
+        val shareText: TextView = itemView.findViewById(R.id.btnShareText)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -32,44 +35,69 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
 
-        holder.tvUsername.text = post.username
-        holder.tvContent.text = post.content
+        holder.userName.text = post.userName
+        holder.content.text = post.content
 
-        // Nếu có hình ảnh, set resource
-        post.imageResId?.let { holder.ivPost.setImageResource(it) }
+        // Hiển thị ảnh nếu có
+        if (post.imageRes != null) {
+            holder.postImage.visibility = View.VISIBLE
+            holder.postImage.setImageResource(post.imageRes)
+        } else {
+            holder.postImage.visibility = View.GONE
+        }
 
-        holder.tvLikeCount.text = post.likeCount.toString()
-        holder.tvCommentCount.text = post.commentCount.toString()
-        holder.tvShareCount.text = post.shareCount.toString()
+        // Hiển thị video nếu có
+        if (post.videoRes != null) {
+            holder.postVideo.visibility = View.VISIBLE
+            val uri = Uri.parse("android.resource://${holder.postVideo.context.packageName}/${post.videoRes}")
+            holder.postVideo.setVideoURI(uri)
+            holder.postVideo.seekTo(1) // show preview
+        } else {
+            holder.postVideo.visibility = View.GONE
+        }
 
-        // Set màu Like lúc load
-        holder.tvLikeCount.setTextColor(if (post.isLiked) Color.parseColor("#1877F2") else Color.BLACK)
+        // Cập nhật trạng thái Like
+        if (post.isLiked) {
+            holder.likeIcon.setColorFilter(Color.BLUE)
+            holder.likeText.setTextColor(Color.BLUE)
+        } else {
+            holder.likeIcon.setColorFilter(Color.GRAY)
+            holder.likeText.setTextColor(Color.GRAY)
+        }
 
-        // Click Like (toggle màu xanh/đen)
-        holder.ivLike.setOnClickListener {
+        // Click Like
+        holder.likeIcon.setOnClickListener {
             post.isLiked = !post.isLiked
-            if (post.isLiked) {
-                post.likeCount++
-                holder.tvLikeCount.setTextColor(Color.parseColor("#1877F2"))
-            } else {
-                post.likeCount--
-                holder.tvLikeCount.setTextColor(Color.BLACK)
-            }
-            holder.tvLikeCount.text = post.likeCount.toString()
+            notifyItemChanged(position)
+        }
+        holder.likeText.setOnClickListener {
+            post.isLiked = !post.isLiked
+            notifyItemChanged(position)
         }
 
         // Click Comment
-        holder.ivComment.setOnClickListener {
-            Toast.makeText(holder.itemView.context, "Comment clicked!", Toast.LENGTH_SHORT).show()
+        val context: Context = holder.itemView.context
+        holder.commentIcon.setOnClickListener {
+            Toast.makeText(context, "Comment clicked", Toast.LENGTH_SHORT).show()
+        }
+        holder.commentText.setOnClickListener {
+            Toast.makeText(context, "Comment clicked", Toast.LENGTH_SHORT).show()
         }
 
         // Click Share
-        holder.ivShare.setOnClickListener {
-            post.shareCount++
-            holder.tvShareCount.text = post.shareCount.toString()
-            Toast.makeText(holder.itemView.context, "Shared!", Toast.LENGTH_SHORT).show()
+        holder.shareIcon.setOnClickListener {
+            Toast.makeText(context, "Share clicked", Toast.LENGTH_SHORT).show()
+        }
+        holder.shareText.setOnClickListener {
+            Toast.makeText(context, "Share clicked", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun getItemCount(): Int = posts.size
+
+    // Thêm bài viết mới lên đầu
+    fun addPost(post: Post) {
+        posts.add(0, post)
+        notifyItemInserted(0)
+    }
 }

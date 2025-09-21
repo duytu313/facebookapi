@@ -1,113 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:orientation="vertical"
+    android:padding="12dp"
     android:background="#FFFFFF">
 
-    <!-- Username -->
+    <!-- Tên người dùng -->
     <TextView
-        android:id="@+id/tvUsername"
+        android:id="@+id/post_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Username"
+        android:text="User Name"
         android:textStyle="bold"
         android:textSize="16sp"
         android:layout_marginBottom="4dp"/>
 
-    <!-- Post content -->
+    <!-- Nội dung bài viết -->
     <TextView
-        android:id="@+id/tvContent"
-        android:layout_width="wrap_content"
+        android:id="@+id/post_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Post content here"
+        android:text="Nội dung bài viết"
         android:textSize="14sp"
-        android:layout_marginBottom="4dp"/>
+        android:layout_marginBottom="8dp"/>
 
-    <!-- Post image -->
+    <!-- Ảnh bài viết -->
     <ImageView
-        android:id="@+id/ivPost"
+        android:id="@+id/post_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/post1"
-        android:layout_marginBottom="4dp"/>
+        android:visibility="gone"
+        android:layout_marginBottom="8dp"
+        android:background="#e0e0e0"/>
 
-    <!-- Like / Comment / Share -->
+    <!-- Video bài viết -->
+    <VideoView
+        android:id="@+id/post_video"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Thanh Like / Comment / Share -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        android:gravity="center_vertical"
+        android:weightSum="3">
 
         <!-- Like -->
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:gravity="center"
             android:layout_width="0dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="8dp">
+
             <ImageView
-                android:id="@+id/ivLike"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:id="@+id/btnLikeIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_like"
-                android:contentDescription="Like"/>
+                android:tint="#808080"/>
+
             <TextView
-                android:id="@+id/tvLikeCount"
+                android:id="@+id/btnLikeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#000000"
-                android:paddingStart="8dp"/>
+                android:text="Like"
+                android:textSize="14sp"
+                android:textColor="#808080"
+                android:layout_marginStart="4dp"/>
         </LinearLayout>
 
         <!-- Comment -->
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:gravity="center"
             android:layout_width="0dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="8dp">
+
             <ImageView
-                android:id="@+id/ivComment"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:id="@+id/btnCommentIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_comment"
-                android:contentDescription="Comment"/>
+                android:tint="#808080"/>
+
             <TextView
-                android:id="@+id/tvCommentCount"
+                android:id="@+id/btnCommentText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
+                android:text="Comment"
+                android:textSize="14sp"
+                android:textColor="#808080"
                 android:layout_marginStart="4dp"/>
         </LinearLayout>
 
         <!-- Share -->
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:gravity="center"
             android:layout_width="0dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="8dp">
+
             <ImageView
-                android:id="@+id/ivShare"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:id="@+id/btnShareIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_share"
-                android:contentDescription="Share"/>
+                android:tint="#808080"/>
+
             <TextView
-                android:id="@+id/tvShareCount"
+                android:id="@+id/btnShareText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
+                android:text="Share"
+                android:textSize="14sp"
+                android:textColor="#808080"
                 android:layout_marginStart="4dp"/>
         </LinearLayout>
 
     </LinearLayout>
-
-
 </LinearLayout>

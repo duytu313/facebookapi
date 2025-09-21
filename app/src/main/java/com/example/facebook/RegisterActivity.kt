@@ -2,57 +2,62 @@ package com.example.facebook
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.*
+import retrofit2.converter.gson.GsonConverterFactory
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var edtUsername: EditText
-    private lateinit var edtEmail: EditText
     private lateinit var edtPassword: EditText
+    private lateinit var edtEmail: EditText
     private lateinit var btnRegister: Button
     private lateinit var btnBackToLogin: Button
+    private lateinit var api: ApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
         edtUsername = findViewById(R.id.edtUsername)
-        edtEmail = findViewById(R.id.edtEmail)
         edtPassword = findViewById(R.id.edtPassword)
+        edtEmail = findViewById(R.id.edtEmail)
         btnRegister = findViewById(R.id.btnRegister)
         btnBackToLogin = findViewById(R.id.btnBackToLogin)
 
+        api = Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:3000/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+
         btnRegister.setOnClickListener {
             val username = edtUsername.text.toString().trim()
-            val email = edtEmail.text.toString().trim()
             val password = edtPassword.text.toString().trim()
+            val email = edtEmail.text.toString().trim()
 
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
                 Toast.makeText(this, "Nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "Email không hợp lệ", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val request = RegisterRequest(username, email, password)
-            ApiClient.apiService.register(request).enqueue(object : Callback<RegisterResponse> {
-                override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+            api.register(username, password, email).enqueue(object : Callback<AuthResponse> {
+                override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
                     val body = response.body()
-                    Toast.makeText(this@RegisterActivity, body?.message ?: "Lỗi server", Toast.LENGTH_LONG).show()
+                    if (body?.success == true) {
+                        Toast.makeText(this@RegisterActivity, body.message, Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(this@RegisterActivity, body?.message ?: "Đăng ký thất bại", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
-                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                    Toast.makeText(this@RegisterActivity, "Lỗi kết nối: ${t.message}", Toast.LENGTH_LONG).show()
+                override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                    Toast.makeText(this@RegisterActivity, "Lỗi: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
         }

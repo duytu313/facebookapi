@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#ffffff">
+
+    <!-- Ô nhập nội dung -->
+    <EditText
+        android:id="@+id/status_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Bạn đang nghĩ gì?"
+        android:minHeight="120dp"
+        android:gravity="top"
+        android:background="@drawable/edit_text_background"
+        android:inputType="textMultiLine"/>
+
+    <!-- Nút đăng -->
+    <Button
+        android:id="@+id/post_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đăng"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#1877f2"
+        android:textColor="#ffffff"/>
+</LinearLayout>

@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:text="Đăng nhập"
             android:backgroundTint="#1877f2"
-            android:textColor="#fff"
+            android:textColor="#ffffff"
             android:layout_marginBottom="12dp"/>
 
         <!-- Forgot Password -->
@@ -62,14 +62,12 @@
             android:textColor="#1877f2"
             android:layout_marginBottom="24dp"/>
 
-        <!-- Create Account -->
+        <!-- Create Account Button -->
         <Button
             android:id="@+id/btnCreateAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tạo tài khoản"
             android:layout_marginTop="16dp"/>
-
-
     </LinearLayout>
 </ScrollView>

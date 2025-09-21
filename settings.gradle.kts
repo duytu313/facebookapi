@@ -1,16 +1,16 @@
 pluginManagement {
     repositories {
-        google()               // ✅ Bắt buộc để tìm thấy Flexbox
-        gradlePluginPortal()
+        google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()               // ✅ Bắt buộc
-        mavenCentral()         // ✅ Bắt buộc
+        google()
+        mavenCentral()
     }
 }
 

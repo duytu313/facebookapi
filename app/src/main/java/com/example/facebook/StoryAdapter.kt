@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 class StoryAdapter(private val stories: List<Story>) :
     RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
 
-    class StoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val ivStory: ImageView = view.findViewById(R.id.ivStory)
-        val tvUsername: TextView = view.findViewById(R.id.tvUsername)
+    inner class StoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val avatar: ImageView = view.findViewById(R.id.story_avatar)
+        val name: TextView = view.findViewById(R.id.story_user_name)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
@@ -23,9 +23,9 @@ class StoryAdapter(private val stories: List<Story>) :
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
         val story = stories[position]
-        holder.tvUsername.text = story.username
-        holder.ivStory.setImageResource(story.imageRes)
+        holder.avatar.setImageResource(story.avatarRes)
+        holder.name.text = story.userName
     }
 
-    override fun getItemCount() = stories.size
+    override fun getItemCount(): Int = stories.size
 }
