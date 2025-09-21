@@ -1,5 +1,6 @@
 package com.example.facebook
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.widget.Toast
 
 class FriendsFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var postAdapter: PostAdapter
-    private val posts = mutableListOf<Post>()
+    private lateinit var friendsAdapter: FriendsAdapter
+    private val friendsList = mutableListOf<Friend>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,35 +22,40 @@ class FriendsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_friends, container, false)
 
-        recyclerView = view.findViewById(R.id.postsRecyclerView)
+        recyclerView = view.findViewById(R.id.friendsRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(posts)
-        recyclerView.adapter = postAdapter
 
-        // Sample posts
-        posts.addAll(
+        friendsAdapter = FriendsAdapter(friendsList,
+            onAddClick = { friend ->
+                Toast.makeText(requireContext(), "Đã gửi lời mời kết bạn tới ${friend.name}", Toast.LENGTH_SHORT).show()
+            },
+            onItemClick = { friend ->
+                val intent = Intent(requireContext(), FriendDetailActivity::class.java)
+                intent.putExtra("friend_data", friend)
+                startActivity(intent)
+            }
+        )
+
+        recyclerView.adapter = friendsAdapter
+
+        // Sample data
+        friendsList.addAll(
             listOf(
-                Post("1", "Bạn thân 1", "Check-in phố cổ Hà Nội", R.drawable.ic_avatar_placeholder, null, "2025-09-21T08:00:00"),
-                Post("2", "Bạn thân 2", "Đi biển cùng nhau 🏖️", R.drawable.ic_avatar_placeholder, null, "2025-09-20T16:30:00"),
-                Post("3", "Bạn thân 3", "Cafe cuối tuần ☕", R.drawable.ic_avatar_placeholder, null, "2025-09-19T10:15:00")
+                Friend("1", "Nguyễn Văn A", R.drawable.avatar1, "Online"),
+                Friend("2", "Trần Thị B", R.drawable.avatar2, "Offline"),
+                Friend("3", "Lê Văn C", R.drawable.avatar3, "Online"),
+                Friend("4", "Phạm Thị D", R.drawable.avatar4, "Offline")
             )
         )
-        postAdapter.notifyDataSetChanged()
+        friendsAdapter.notifyDataSetChanged()
 
         return view
     }
 
-    // Thêm post mới
-    fun addNewPost(userName: String, content: String, imageRes: Int? = null, videoRes: Int? = null) {
-        val newPost = Post(
-            id = System.currentTimeMillis().toString(),
-            userName = userName,
-            content = content,
-            imageRes = imageRes,
-            videoRes = videoRes,
-            createdAt = "2025-09-21T12:00:00"
-        )
-//        postAdapter.addPostOnTop(newPost)
-//        recyclerView.scrollToPosition(0)
+    // Thêm bạn bè mới lên đầu danh sách (nếu cần)
+    fun addNewFriend(friend: Friend) {
+        friendsList.add(0, friend)
+        friendsAdapter.notifyItemInserted(0)
+        recyclerView.scrollToPosition(0)
     }
 }

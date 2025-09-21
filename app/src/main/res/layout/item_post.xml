@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -35,15 +35,15 @@
         android:layout_marginBottom="8dp"
         android:background="#e0e0e0"/>
 
-    <!-- Video bài viết -->
-    <VideoView
-        android:id="@+id/post_video"
+    <!-- YouTube Player -->
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/youtube_player_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:visibility="gone"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"/>
 
-    <!-- Thanh Like / Comment / Share -->
+    <!-- Like / Comment / Share -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,81 +53,71 @@
 
         <!-- Like -->
         <LinearLayout
+            android:id="@+id/likeContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center_vertical|center_horizontal"
             android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/btnLikeIcon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_like"
-                android:tint="#808080"/>
-
-            <TextView
-                android:id="@+id/btnLikeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Like"
-                android:textSize="14sp"
-                android:textColor="#808080"
-                android:layout_marginStart="4dp"/>
+            <ImageView android:id="@+id/btnLikeIcon" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_like"/>
+            <TextView android:id="@+id/btnLikeText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Like" android:layout_marginStart="4dp"/>
         </LinearLayout>
 
         <!-- Comment -->
         <LinearLayout
+            android:id="@+id/commentContainerToggle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center_vertical|center_horizontal"
             android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/btnCommentIcon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_comment"
-                android:tint="#808080"/>
-
-            <TextView
-                android:id="@+id/btnCommentText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Comment"
-                android:textSize="14sp"
-                android:textColor="#808080"
-                android:layout_marginStart="4dp"/>
+            <ImageView android:id="@+id/btnCommentIcon" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_comment"/>
+            <TextView android:id="@+id/btnCommentText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Comment" android:layout_marginStart="4dp"/>
         </LinearLayout>
 
         <!-- Share -->
         <LinearLayout
+            android:id="@+id/shareContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center_vertical|center_horizontal"
             android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/btnShareIcon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_share"
-                android:tint="#808080"/>
-
-            <TextView
-                android:id="@+id/btnShareText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Share"
-                android:textSize="14sp"
-                android:textColor="#808080"
-                android:layout_marginStart="4dp"/>
+            <ImageView android:id="@+id/btnShareIcon" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_share"/>
+            <TextView android:id="@+id/btnShareText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Share" android:layout_marginStart="4dp"/>
         </LinearLayout>
+    </LinearLayout>
 
+    <!-- RecyclerView comment -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:nestedScrollingEnabled="false"/>
+
+    <!-- Comment inline -->
+    <LinearLayout
+        android:id="@+id/commentInlineContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="8dp">
+        <EditText
+            android:id="@+id/edtCommentInline"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="Viết bình luận..."
+            android:padding="8dp"/>
+        <Button
+            android:id="@+id/btnSendInline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send"/>
     </LinearLayout>
 </LinearLayout>

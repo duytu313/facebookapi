@@ -4,19 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class FeedFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var storyRecyclerView: RecyclerView
     private lateinit var postAdapter: PostAdapter
-    private lateinit var storyAdapter: StoryAdapter
-
     private val postList = mutableListOf<Post>()
-    private val storyList = mutableListOf<Story>()
+    private val currentUserId = "YOUR_USER_ID" // TODO: lấy từ login hoặc SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,69 +25,85 @@ class FeedFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_feed, container, false)
 
-        // RecyclerView cho Story
-        storyRecyclerView = view.findViewById(R.id.storyRecyclerView)
-        storyRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        storyAdapter = StoryAdapter(storyList)
-        storyRecyclerView.adapter = storyAdapter
-
-        // RecyclerView cho Post
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(postList)
+
+        postAdapter = PostAdapter(
+            posts = postList,
+            currentUserId = currentUserId
+        ) { post ->
+            // Click comment: mở CommentFragment nếu có post.id
+            post.id?.let { postId ->
+                val fragment = CommentFragment.newInstance(postId)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit()
+
+                // Ẩn header khi vào comment
+                (activity as? HomeActivity)?.findViewById<View>(R.id.header)?.visibility = View.GONE
+            }
+        }
+
         recyclerView.adapter = postAdapter
 
-        // load dữ liệu mẫu
-        loadDummyData()
+        loadPostsFromServer()
 
         return view
     }
 
-    // Hàm tạo dữ liệu mẫu
-    private fun loadDummyData() {
-        // Thêm stories
-        storyList.clear()
-        storyList.addAll(
-            listOf(
-                Story("Nguyễn Văn A", R.drawable.sample_image),
-                Story("Trần Thị B", R.drawable.sample_image),
-                Story("Lê Văn C", R.drawable.sample_image)
-            )
-        )
-        storyAdapter.notifyDataSetChanged()
+    private fun loadPostsFromServer() {
+        ApiClient.apiService.getPosts().enqueue(object : Callback<PostsResponse> {
+            override fun onResponse(call: Call<PostsResponse>, response: Response<PostsResponse>) {
+                val body = response.body()
+                if (response.isSuccessful && body?.success == true) {
+                    val posts = body.posts.map { serverPost ->
+                        Post(
+                            id = serverPost._id ?: System.currentTimeMillis().toString(),
+                            userId = serverPost.userId,
+                            userName = serverPost.userName ?: "Người dùng",
+                            content = serverPost.content ?: "",
+                            imageRes = null,  // chuyển từ imageUrl sang imageRes
+                            videoRes = null,  // chuyển từ videoId sang videoRes
+                            createdAt = serverPost.createdAt ?: "Vừa xong",
+                            isLiked = false
+                        )
+                    }
 
-        // Thêm posts
-        postList.clear()
-        postList.addAll(
-            listOf(
-                Post(
-                    id = "1",
-                    userName = "Nguyễn Văn A",
-                    content = "Bài viết mẫu 1",
-                    imageRes = R.drawable.sample_image,
-                    createdAt = "2 giờ trước"
-                ),
-                Post(
-                    id = "2",
-                    userName = "Trần Thị B",
-                    content = "Video mới up nè",
-                    videoRes = null,
-                    createdAt = "1 giờ trước"
-                ),
-                Post(
-                    id = "3",
-                    userName = "Lê Văn C",
-                    content = "Không có ảnh/video, chỉ text thôi",
-                    createdAt = "30 phút trước"
-                )
-            )
-        )
+                    postList.clear()
+                    postList.addAll(posts)
+                    postAdapter.notifyDataSetChanged()
+                } else {
+                    Toast.makeText(requireContext(), "Lỗi tải bài viết", Toast.LENGTH_SHORT).show()
+                }
+            }
 
-        postAdapter.notifyDataSetChanged()
+            override fun onFailure(call: Call<PostsResponse>, t: Throwable) {
+                Toast.makeText(requireContext(), "Lỗi kết nối server", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
-    // Hàm thêm bài viết mới lên đầu
+    fun likePost(post: Post) {
+        val postId = post.id ?: return
+        ApiClient.apiService.likePost(postId, currentUserId)
+            .enqueue(object : Callback<LikeResponse> {
+                override fun onResponse(call: Call<LikeResponse>, response: Response<LikeResponse>) {
+                    if (response.isSuccessful && response.body()?.success == true) {
+                        post.isLiked = !post.isLiked
+                        postAdapter.notifyDataSetChanged()
+                    } else {
+                        Toast.makeText(requireContext(), "Like thất bại", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<LikeResponse>, t: Throwable) {
+                    Toast.makeText(requireContext(), "Lỗi kết nối server", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    // Thêm post mới lên đầu danh sách
     fun addPostOnTop(post: Post) {
         postList.add(0, post)
         postAdapter.notifyItemInserted(0)

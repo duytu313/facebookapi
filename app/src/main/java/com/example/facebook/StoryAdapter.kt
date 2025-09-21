@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 class StoryAdapter(private val stories: List<Story>) :
     RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
 
-    inner class StoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val avatar: ImageView = view.findViewById(R.id.story_avatar)
-        val name: TextView = view.findViewById(R.id.story_user_name)
+    inner class StoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val avatar: ImageView = itemView.findViewById(R.id.story_avatar)
+        val name: TextView = itemView.findViewById(R.id.story_user_name)
+        val online: View = itemView.findViewById(R.id.story_onlineIndicator)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
@@ -23,8 +24,9 @@ class StoryAdapter(private val stories: List<Story>) :
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
         val story = stories[position]
-        holder.avatar.setImageResource(story.avatarRes)
-        holder.name.text = story.userName
+        holder.avatar.setImageResource(story.imageRes)
+        holder.name.text = story.name
+        holder.online.visibility = if (story.isViewed) View.GONE else View.VISIBLE
     }
 
     override fun getItemCount(): Int = stories.size

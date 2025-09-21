@@ -1,5 +1,7 @@
 package com.example.facebook
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +10,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 data class MenuItem(
+    val id: Int,
     val iconRes: Int,
     val title: String
 )
 
-class MenuAdapter(private val items: List<MenuItem>) :
-    RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
+class MenuAdapter(
+    private val items: List<MenuItem>,
+    private val context: Context
+) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
     inner class MenuViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivIcon: ImageView = itemView.findViewById(R.id.ivIcon)
@@ -31,10 +36,30 @@ class MenuAdapter(private val items: List<MenuItem>) :
         holder.ivIcon.setImageResource(item.iconRes)
         holder.tvTitle.text = item.title
 
-        // Click event (nếu muốn)
         holder.itemView.setOnClickListener {
-            // Xử lý click từng item menu
-            // ví dụ: Toast hoặc chuyển Fragment khác
+            when (item.id) {
+                1 -> {
+                    // Ví dụ mở AccountActivity
+                }
+                2 -> {
+                    // Ví dụ mở PrivacyActivity
+                }
+                3 -> {
+                    // Ví dụ mở LanguageActivity
+                }
+                4 -> {
+                    // Ví dụ mở HelpActivity
+                }
+                5 -> {
+                    // Logout → về LoginActivity
+                    val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    prefs.edit().clear().apply()
+
+                    val intent = Intent(context, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    context.startActivity(intent)
+                }
+            }
         }
     }
 

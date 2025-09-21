@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -13,8 +14,8 @@ class HomeFragment : Fragment() {
     private lateinit var storyRecyclerView: RecyclerView
     private lateinit var postsRecyclerView: RecyclerView
     private lateinit var postAdapter: PostAdapter
-
-    private val posts = mutableListOf<Post>()
+    private lateinit var viewModel: PostViewModel
+    private val currentUserId = "YOUR_USER_ID"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,45 +23,57 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // 1️⃣ Story RecyclerView
+        // --- Story RecyclerView ---
         storyRecyclerView = view.findViewById(R.id.storyRecyclerView)
         storyRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         storyRecyclerView.adapter = StoryAdapter(getSampleStories())
 
-        // 2️⃣ Post RecyclerView
+        // --- Post RecyclerView ---
         postsRecyclerView = view.findViewById(R.id.postsRecyclerView)
         postsRecyclerView.layoutManager = LinearLayoutManager(context)
-        postAdapter = PostAdapter(posts)
+
+        // --- Lấy ViewModel dùng chung với Activity ---
+        viewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
+
+        postAdapter = PostAdapter(mutableListOf(), currentUserId) { post ->
+            val fragment = CommentFragment.newInstance(post.id ?: "")
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+
+            (activity as? HomeActivity)?.findViewById<View>(R.id.header)?.visibility = View.GONE
+        }
         postsRecyclerView.adapter = postAdapter
 
-        // 3️⃣ Sample posts
-        posts.addAll(getSamplePosts())
-        postAdapter.notifyDataSetChanged()
+        // --- Observe LiveData từ ViewModel ---
+        viewModel.posts.observe(viewLifecycleOwner) { postList ->
+            postAdapter.updatePosts(postList)
+        }
+
+        // --- Tải bài viết từ server khi mở fragment ---
+        viewModel.loadPostsFromServer()
 
         return view
     }
 
-    // Hàm thêm bài viết mới lên đầu danh sách
+    // --- Thêm bài viết mới lên đầu feed ---
     fun addPostOnTop(newPost: Post) {
-        posts.add(0, newPost)
-        postAdapter.notifyItemInserted(0)
+        viewModel.addPost(newPost)        // cập nhật ViewModel & server
+        postAdapter.addPostOnTop(newPost) // cập nhật adapter
         postsRecyclerView.scrollToPosition(0)
     }
 
+    // --- Sample Stories ---
     private fun getSampleStories(): List<Story> {
         return listOf(
-            Story("Alice", R.drawable.ic_avatar_placeholder),
-            Story("Bob", R.drawable.ic_avatar_placeholder),
-            Story("Charlie", R.drawable.ic_avatar_placeholder)
-        )
-    }
-
-    private fun getSamplePosts(): List<Post> {
-        return listOf(
-            Post("1", "Alice", "Hello world!", R.drawable.ic_avatar_placeholder, null, "2025-09-21"),
-            Post("2", "Bob", "This is my post.", R.drawable.ic_avatar_placeholder, null, "2025-09-21"),
-            Post("3", "Charlie", "Check this out!", R.drawable.ic_avatar_placeholder, null, "2025-09-21")
+            Story(R.drawable.avatar1, "Cường", true),
+            Story(R.drawable.avatar2, "Bùi", true),
+            Story(R.drawable.avatar3, "Chinh", false),
+            Story(R.drawable.avatar4, "Quỳnh", true),
+            Story(R.drawable.avatar5, "Hoàng", false),
+            Story(R.drawable.avatar6, "Princess👑❤️", true)
         )
     }
 }

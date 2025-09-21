@@ -25,30 +25,34 @@
                 android:textStyle="bold"/>
 
             <ImageView
+                android:id="@+id/ivSettings"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="16dp"
                 android:src="@drawable/ic_settings"
                 android:contentDescription="Settings"/>
         </LinearLayout>
 
         <!-- Profile Section -->
         <LinearLayout
+            android:id="@+id/llProfile"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="16dp"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivProfileMenu"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/avatar1"
-                android:contentDescription="Avatar"
-                android:scaleType="centerCrop"
-                android:background="@drawable/circle_background"/>
+                android:contentDescription="Avatar"/>
 
             <TextView
+                android:id="@+id/tvProfileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tên người dùng"
@@ -57,20 +61,30 @@
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
 
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DDDDDD"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
         <!-- Main menu items -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp">
+            android:layout_height="wrap_content">
 
-            <!-- Ví dụ 1 item -->
             <LinearLayout
+                android:id="@+id/llFriends"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:gravity="center_vertical">
+                android:layout_height="48dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -86,7 +100,7 @@
                     android:textSize="16sp"/>
             </LinearLayout>
 
-            <!-- Thêm các item khác tương tự -->
+            <!-- Thêm item khác nếu cần -->
         </LinearLayout>
 
     </LinearLayout>

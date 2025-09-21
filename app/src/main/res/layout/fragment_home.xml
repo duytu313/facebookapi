@@ -6,12 +6,11 @@
     android:background="#f0f2f5"
     android:padding="8dp">
 
-    <!-- Story RecyclerView ngang -->
+    <!-- Story RecyclerView ngang, đặt chiều cao cố định -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/storyRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="100dp"
         android:paddingTop="4dp"
         android:paddingBottom="8dp"/>
 

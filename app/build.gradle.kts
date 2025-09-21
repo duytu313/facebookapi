@@ -68,4 +68,6 @@ dependencies {
 
     // CircleImageView
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0")
 }
